@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/eredi93/marloss.svg?branch=master)](https://travis-ci.org/eredi93/marloss)
 [![Gem Version](https://badge.fury.io/rb/marloss.svg)](http://badge.fury.io/rb/marloss)
 
-Marloss is a general DynamoDB-based locking implementation.
+Marloss is a general DynamoDB-based lock implementation.
+
+![rusty-lock](https://user-images.githubusercontent.com/10990391/33243215-aa602a6c-d2d9-11e7-8fc6-d4a0c2a5b30d.jpg)
 
 ### Installation
 
