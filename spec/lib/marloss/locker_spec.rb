@@ -57,33 +57,29 @@ module Marloss
     end
 
     describe ".with_refreshed_lock" do
-      it "should refresh the lock once" do
-        ttl = 1
-        sleep_seconds = ttl / 3.0
+      let(:ttl) { 1 }
+      let(:sleep_seconds) { ttl / 3.0 }
 
+      it "should refresh the lock once" do
+        allow(locker).to receive(:loop).and_yield
         allow(store).to receive(:ttl).and_return(ttl)
 
         expect(store).to receive(:refresh_lock).with(name)
-        expect(locker).to receive(:sleep).with(sleep_seconds) do
-          sleep(sleep_seconds)
-        end
+        expect(locker).to receive(:sleep).with(sleep_seconds)
 
-        locker.with_refreshed_lock { sleep(sleep_seconds) }
+        # sleep 0.1 to allow Thread to call refresh_lock
+        locker.with_refreshed_lock { sleep(0.1) }
       end
 
       it "should refresh the lock three times" do
-        ttl = 1
-        sleep_seconds = ttl / 3.0
-
+        allow(locker).to receive(:loop).and_yield.and_yield.and_yield
         allow(store).to receive(:ttl).and_return(ttl)
-        allow(locker).to receive(:sleep).with(sleep_seconds) do
-          sleep(sleep_seconds)
-        end
 
-        expect(store).to receive(:refresh_lock).with(name)
-          .exactly(3).times
+        expect(store).to receive(:refresh_lock).with(name).exactly(3).times
+        expect(locker).to receive(:sleep).with(sleep_seconds).exactly(3).times
 
-        locker.with_refreshed_lock { sleep(ttl) }
+        # sleep 0.1 to allow Thread to call refresh_lock
+        locker.with_refreshed_lock { sleep(0.1) }
       end
     end
 
