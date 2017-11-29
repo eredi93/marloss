@@ -106,6 +106,8 @@ module Marloss
 
     def delete_lock(name)
       client.delete_item(key: { hash_key => name }, table_name: table)
+
+      Marloss.logger.info("Lock for #{name} deleted successfully")
     end
 
     private def process_id
