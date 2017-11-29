@@ -56,17 +56,7 @@ module Marloss
 
       locker.wait_until_lock_obtained(opts)
 
-      yield
-
-      locker.release_lock
-    end
-
-    def with_refreshed_marloss_locker(name, opts = {})
-      locker = marloss_locker(name)
-
-      locker.wait_until_lock_obtained(opts)
-
-      locker.with_refreshed_lock { yield }
+      yield(locker)
 
       locker.release_lock
     end

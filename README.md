@@ -48,16 +48,11 @@ end
 now you can simply wrap the code that needs to be locked
 
 ```ruby
-with_marloss_locker("my_lock")
+with_marloss_locker("my_lock") do |locker|
   # execute code
-end
-```
-
-if you have a long running task and you need to make sure you don't lose the lock
-
-```ruby
-with_refreshed_marloss_locker("my_lock")
-  # execute code
+  # ...
+  # refresh lock if needed
+  locker.refresh
 end
 ```
 
@@ -82,11 +77,6 @@ locker.wait_until_lock_obtained
 
 # refresh the lock once
 locker.refresh
-
-# or execute block with lock being refreshed
-locker.with_refreshed_lock do
-  # execute long running code
-end
 
 # delete the lock
 locker.release_lock
