@@ -29,24 +29,5 @@ module Marloss
       retry
     end
 
-    def with_refreshed_lock
-      thr = Thread.new do
-        loop do
-          begin
-            store.refresh_lock(name)
-          rescue Exception => e
-            Thread.main.raise(e)
-          end
-
-          sleep(store.ttl / 3.0)
-        end
-      end
-
-      yield
-
-    ensure
-      thr.kill
-    end
-
   end
 end

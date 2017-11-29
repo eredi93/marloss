@@ -90,18 +90,9 @@ describe Marloss do
           expect(marloss_locker).to receive(:wait_until_lock_obtained)
           expect(marloss_locker).to receive(:release_lock)
 
-          class_instance.with_marloss_locker(lock_name) { nil }
-        end
-      end
-
-      describe ".with_refreshed_marloss_locker" do
-        it "should execute block with refreshed lock" do
-          expect(marloss_locker).to receive(:wait_until_lock_obtained)
-          expect(marloss_locker).to receive(:with_refreshed_lock).and_yield
-          expect(marloss_locker).to receive(:release_lock)
-
-          class_instance.with_refreshed_marloss_locker(lock_name) { nil }
-
+          class_instance.with_marloss_locker(lock_name) do |locker|
+            expect(locker).to eq(marloss_locker)
+          end
         end
       end
     end
