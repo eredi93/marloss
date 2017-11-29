@@ -1,3 +1,9 @@
+## 0.2.1 29/11/2017
+
+IMPROVEMENTS:
+
+* Log when deleting the lock
+
 ## 0.2.0 29/11/2017
 
 IMPROVEMENTS:
