@@ -18,6 +18,10 @@ module Marloss
       store.refresh_lock(name)
     end
 
+    def release_lock
+      store.delete_lock(name)
+    end
+
     def wait_until_lock_obtained(sleep_seconds: 3)
       store.create_lock(name)
     rescue LockNotObtainedError
