@@ -9,11 +9,59 @@ Marloss is a general DynamoDB-based lock implementation.
 
 ### Installation
 
+Add this line to your application's Gemfile:
+
+```ruby
+gem "marloss"
+```
+
+And then execute:
+
 ```sh
-gem install marloss
+$ bundle
+```
+
+Or install it yourself as:
+
+```sh
+$ gem install marloss
 ```
 
 ### Usage
+
+Marloss can be use as module, with some useful heplers, or plain for more specific use cases
+
+#### Module
+
+Include the module to your class and set the options
+
+```ruby
+class MyClass
+
+  include Marloss
+
+  marloss_options table: "my_table", hash_key: "ID"
+
+end
+```
+
+now you can simply wrap the code that needs to be locked
+
+```ruby
+with_marloss_locker("my_lock")
+  # execute code
+end
+```
+
+if you have a long running task and you need to make sure you don't lose the lock
+
+```ruby
+with_refreshed_marloss_locker("my_lock")
+  # execute code
+end
+```
+
+#### Plain
 
 Firstly, we need to initialize a lock store:
 
@@ -41,7 +89,7 @@ locker.with_refreshed_lock do
 end
 
 # delete the lock
-locker.delete_lock
+locker.release_lock
 ```
 
 ### Testing

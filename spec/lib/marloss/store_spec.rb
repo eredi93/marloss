@@ -153,5 +153,14 @@ module Marloss
       end
     end
 
+    describe ".delete_lock" do
+      it "should delete item" do
+        expect(ddb_client).to receive(:delete_item)
+          .with(key: { hash_key => name }, table_name: table)
+
+        store.delete_lock(name)
+      end
+    end
+
   end
 end

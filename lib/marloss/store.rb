@@ -32,7 +32,9 @@ module Marloss
         },
         table_name: table
       )
+
       Marloss.logger.info("DynamoDB table created successfully")
+
       client.update_time_to_live(
         table_name: table,
         time_to_live_specification: {
@@ -40,11 +42,13 @@ module Marloss
           attribute_name: "Expires"
         }
       )
+
       Marloss.logger.info("DynamoDB table TTL configured successfully")
     end
 
     def delete_table
       client.delete_table(table_name: table)
+
       Marloss.logger.info("DynamoDB table deleted successfully")
     end
 
@@ -66,9 +70,12 @@ module Marloss
         },
         condition_expression: "attribute_not_exists(#{hash_key}) OR #E < :now OR #P = :process_id"
       )
+
       Marloss.logger.info("Lock for #{name} created successfully, will expire in #{ttl} seconds")
     rescue Aws::DynamoDB::Errors::ConditionalCheckFailedException => e
+
       Marloss.logger.error("Failed to create lock for #{name}")
+
       raise(LockNotObtainedError, e.message)
     end
 
@@ -88,10 +95,17 @@ module Marloss
         update_expression: "SET #E = :expires", 
         condition_expression: "attribute_exists(#{hash_key}) AND (#E < :now OR #P = :process_id)"
       )
+
       Marloss.logger.info("Lock for #{name} refreshed successfully, will expire in #{ttl} seconds")
     rescue Aws::DynamoDB::Errors::ConditionalCheckFailedException => e
+
       Marloss.logger.error("Failed to refresh lock for #{name}")
+
       raise(LockNotRefreshedError, e.message)
+    end
+
+    def delete_lock(name)
+      client.delete_item(key: { hash_key => name }, table_name: table)
     end
 
     private def process_id

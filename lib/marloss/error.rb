@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 #
 module Marloss
-  class LockNotObtainedError < StandardError
+
+  class Error < StandardError
   end
 
-  class LockNotRefreshedError < StandardError
+  class LockNotObtainedError < Error
   end
+
+  class LockNotRefreshedError < Error
+  end
+
+  class MissingParameterError < Error
+  end
+
 end

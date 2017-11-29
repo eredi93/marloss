@@ -30,6 +30,14 @@ module Marloss
       end
     end
 
+    describe ".release_lock" do
+      it "should succeed" do
+        expect(store).to receive(:delete_lock).with(name)
+
+        locker.release_lock
+      end
+    end
+
     describe ".wait_until_lock_obtained" do
       it "should get the lock the first time" do
         expect(store).to receive(:create_lock).with(name)
