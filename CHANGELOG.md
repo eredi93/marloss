@@ -1,4 +1,4 @@
-## 0.2.0 (Unreleased)
+## 0.2.0 29/11/2017
 
 IMPROVEMENTS:
 
