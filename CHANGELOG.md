@@ -1,3 +1,9 @@
+## 0.3.0 29/11/2017
+
+IMPROVEMENTS:
+
+* remove `with_refreshed_lock` as is not safe [#4](https://github.com/eredi93/marloss/pull/4)
+
 ## 0.2.1 29/11/2017
 
 IMPROVEMENTS:
