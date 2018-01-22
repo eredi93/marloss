@@ -100,4 +100,4 @@ Marloss.logger = Logger.new("my_app.log")
 
 ### Contributing
 
-This repository is [open to contributions](.github/CONTRIBUTING.md).
+This repository is [open to contributions](CONTRIBUTING.md).
