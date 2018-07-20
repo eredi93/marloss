@@ -92,7 +92,7 @@ module Marloss
           ":now" => Time.now.to_i,
           ":process_id" => process_id,
         },
-        update_expression: "SET #E = :expires", 
+        update_expression: "SET #E = :expires",
         condition_expression: "attribute_exists(#{hash_key}) AND (#E < :now OR #P = :process_id)"
       )
 
@@ -110,7 +110,8 @@ module Marloss
       Marloss.logger.info("Lock for #{name} deleted successfully")
     end
 
-    private def process_id
+    private
+    def process_id
       hostname = `hostname`.chomp
       pid = Process.pid
 

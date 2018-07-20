@@ -94,6 +94,16 @@ describe Marloss do
             expect(locker).to eq(marloss_locker)
           end
         end
+
+        it "should release the lock if an exception is raised in the block" do
+          expect(marloss_locker).to receive(:wait_until_lock_obtained)
+          expect(marloss_locker).to receive(:release_lock)
+
+          class_instance.with_marloss_locker(lock_name) do |locker|
+            expect(locker).to eq(marloss_locker)
+            raise "Error!"
+          end rescue nil
+        end
       end
     end
   end

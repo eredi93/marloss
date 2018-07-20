@@ -62,6 +62,17 @@ module Marloss
 
         locker.wait_until_lock_obtained(sleep_seconds: sleep_seconds)
       end
+
+      it "should take a configurable number of retries then fail" do
+
+        allow(store).to receive(:create_lock).with(name)
+          .exactly(5).times.and_raise(LockNotObtainedError)
+
+        allow(locker).to receive(:sleep).with(3)
+        expect {
+          locker.wait_until_lock_obtained(retries: 5)
+        }.to raise_error
+      end
     end
 
   end
