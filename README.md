@@ -64,6 +64,11 @@ Firstly, we need to initialize a lock store:
 store = Marloss::Store.new("lock_table_name", "LockHashKeyName")
 ```
 
+Create table if it does not exist:
+```ruby
+store.create_table
+```
+
 We can use this store to create a single lock
 
 ```ruby
@@ -76,7 +81,7 @@ locker.obtain_lock
 locker.wait_until_lock_obtained
 
 # refresh the lock once
-locker.refresh
+locker.refresh_lock
 
 # delete the lock
 locker.release_lock
