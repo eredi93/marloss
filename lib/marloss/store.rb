@@ -13,63 +13,69 @@ module Marloss
     end
 
     def create_table
-      begin
-        client.create_table(
-          attribute_definitions: [
-            {
-              attribute_name: hash_key,
-              attribute_type: "S",
-            }
-          ],
-          key_schema: [
-            {
-              attribute_name: hash_key,
-              key_type: "HASH",
-            }
-          ],
-          provisioned_throughput: {
-            read_capacity_units: 5,
-            write_capacity_units: 5,
-          },
-          table_name: table
-        )
-      rescue Aws::DynamoDB::Errors::ResourceInUseException => e
-        case e.message
-        when "Table already exists: #{table}"
-          Marloss.logger.warn("DynamoDB table #{table} already exists")
-        else
-          raise
-        end
-      end
+      create_ddb_table
+      wait_until_ddb_table_exists
+      set_ddb_table_ttl
+    end
+
+    private def create_ddb_table
+      client.create_table(
+        attribute_definitions: [
+          {
+            attribute_name: hash_key,
+            attribute_type: "S",
+          }
+        ],
+        key_schema: [
+          {
+            attribute_name: hash_key,
+            key_type: "HASH",
+          }
+        ],
+        provisioned_throughput: {
+          read_capacity_units: 5,
+          write_capacity_units: 5,
+        },
+        table_name: table
+      )
 
       Marloss.logger.info("DynamoDB table created successfully")
-
-      begin
-        client.wait_until(:table_exists, table_name: table) do |w|
-          w.max_attempts = 10
-          w.delay = 1
-        end
-
-        client.update_time_to_live(
-          table_name: table,
-          time_to_live_specification: {
-            enabled: true,
-            attribute_name: "Expires"
-          }
-        )
-      rescue Aws::Waiters::Errors::WaiterFailed => e
-        Marloss.logger.error("Failed waiting for initialization of table #{table}")
-        raise
-      rescue Aws::DynamoDB::Errors::ValidationException => e
-        case e.message
-        when "TimeToLive is already enabled"
-          Marloss.logger.warn("TTL attribute is already configured for table #{table}")
-        else
-          raise
-        end
+    rescue Aws::DynamoDB::Errors::ResourceInUseException => e
+      case e.message
+      when "Table already exists: #{table}"
+        Marloss.logger.warn("DynamoDB table #{table} already exists")
+      else
+        raise(CreateTableError, e.message)
       end
+    end
+
+    private def wait_until_ddb_table_exists
+      client.wait_until(:table_exists, table_name: table) do |w|
+        w.max_attempts = 10
+        w.delay = 1
+      end
+    rescue Aws::Waiters::Errors::WaiterFailed => e
+      Marloss.logger.error("Failed waiting for initialization of table #{table}")
+      raise(CreateTableError, e.message)
+    end
+
+    private def set_ddb_table_ttl
+      client.update_time_to_live(
+        table_name: table,
+        time_to_live_specification: {
+          enabled: true,
+          attribute_name: "Expires"
+        }
+      )
 
       Marloss.logger.info("DynamoDB table TTL configured successfully")
+    rescue Aws::DynamoDB::Errors::ValidationException => e
+      case e.message
+      when "TimeToLive is already enabled"
+        Marloss.logger.warn("TTL attribute is already configured for table #{table}")
+      else
+        raise(SetTableTtlError, e.message)
+      end
     end
 
     def delete_table

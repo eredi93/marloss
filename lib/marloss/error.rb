@@ -5,6 +5,12 @@ module Marloss
   class Error < StandardError
   end
 
+  class CreateTableError < Error
+  end
+
+  class SetTableTtlError < Error
+  end
+
   class LockNotObtainedError < Error
   end
 
