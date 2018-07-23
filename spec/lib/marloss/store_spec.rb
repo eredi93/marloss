@@ -45,6 +45,10 @@ module Marloss
           }, 
           table_name: table
         )
+        expect(ddb_client).to receive(:wait_until).with(
+          :table_exists,
+          table_name: table
+        )
         expect(ddb_client).to receive(:update_time_to_live).with(
           table_name: table,
           time_to_live_specification: {
