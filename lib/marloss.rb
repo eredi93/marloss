@@ -20,9 +20,9 @@ module Marloss
   def self.included(base)
     base.define_singleton_method(:marloss_options) do |opts|
       if opts[:table].nil?
-        raise(MissingParameterError, "DynamoDB Hash Key not set")
-      elsif opts[:hash_key].nil?
         raise(MissingParameterError, "DynamoDB Table not set")
+      elsif opts[:hash_key].nil?
+        raise(MissingParameterError, "DynamoDB Hash Key not set")
       end
 
       define_method(:marloss_options_hash) { opts }
@@ -58,6 +58,7 @@ module Marloss
 
       yield(locker)
 
+    ensure
       locker.release_lock
     end
 
