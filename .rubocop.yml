@@ -1,0 +1,19 @@
+Metrics/LineLength:
+  Max: 100
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
+Style/Documentation:
+  Enabled: false # disable for now
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "marloss.gemspec"
