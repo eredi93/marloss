@@ -1,8 +1,7 @@
 # frozen_string_literal: true
-#
+
 module Marloss
   class Locker
-
     attr_reader :store, :name
 
     def initialize(store, name)
@@ -26,8 +25,8 @@ module Marloss
       store.create_lock(name)
     rescue LockNotObtainedError
       sleep(sleep_seconds)
+
       retry
     end
-
   end
 end

@@ -5,7 +5,5 @@ require "marloss"
 Marloss.logger = Logger.new("/dev/null")
 
 class ClassFixture
-
   include Marloss
-
 end

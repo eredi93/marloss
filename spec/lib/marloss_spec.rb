@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe Marloss do
-
   it "has a version number" do
     expect(Marloss::VERSION).not_to be(nil)
   end
@@ -97,5 +96,4 @@ describe Marloss do
       end
     end
   end
-
 end
