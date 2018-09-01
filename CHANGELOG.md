@@ -1,3 +1,9 @@
+## 0.3.1 01/09/2018
+
+IMPROVEMENTS:
+
+* Make `create_table` wait for table [#8](https://github.com/eredi93/marloss/pull/8)
+
 ## 0.3.0 29/11/2017
 
 IMPROVEMENTS:
