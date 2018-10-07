@@ -21,10 +21,15 @@ module Marloss
       store.delete_lock(name)
     end
 
-    def wait_until_lock_obtained(sleep_seconds: 3)
+    def wait_until_lock_obtained(sleep_seconds: 3, retries: nil)
       store.create_lock(name)
     rescue LockNotObtainedError
       sleep(sleep_seconds)
+
+      unless retries.nil?
+        retries -= 1
+        raise if retries.zero?
+      end
 
       retry
     end
