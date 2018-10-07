@@ -55,7 +55,7 @@ module Marloss
       locker.wait_until_lock_obtained(opts)
 
       yield(locker)
-
+    ensure
       locker.release_lock
     end
   end

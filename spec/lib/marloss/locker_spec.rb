@@ -60,5 +60,21 @@ describe Marloss::Locker do
 
       locker.wait_until_lock_obtained(sleep_seconds: sleep_seconds)
     end
+
+    it "should fail to get the lock when reached retries" do
+      sleep_seconds = 3
+      max_attempts = 3
+
+      allow(store).to receive(:create_lock).with(name) { raise(Marloss::LockNotObtainedError) }
+      allow(locker).to receive(:sleep).with(sleep_seconds)
+        .and_return(sleep_seconds)
+
+      expect(store).to receive(:create_lock).with(name)
+        .exactly(max_attempts).times
+
+      expect do
+        locker.wait_until_lock_obtained(sleep_seconds: sleep_seconds, retries: max_attempts)
+      end.to raise_error(Marloss::LockNotObtainedError)
+    end
   end
 end
