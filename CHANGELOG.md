@@ -1,3 +1,10 @@
+## 0.4.0 01/09/2018
+
+IMPROVEMENTS:
+
+* Custom ttl attribute name instead of hardcoding `Expires` [#12](https://github.com/eredi93/marloss/pull/12)
+* Add possiblity to pass retries to `wait_until_lock_obtained` preventing spin lock [#11](https://github.com/eredi93/marloss/pull/11)
+
 ## 0.3.1 01/09/2018
 
 IMPROVEMENTS:
