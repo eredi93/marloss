@@ -2,12 +2,13 @@
 
 module Marloss
   class Store # rubocop:disable Metrics/ClassLength
-    attr_reader :client, :table, :hash_key, :ttl
+    attr_reader :client, :table, :hash_key, :expires_key, :ttl
 
-    def initialize(table, hash_key, ttl: 30, client_options: {})
+    def initialize(table, hash_key, expires_key: "Expires", ttl: 30, client_options: {})
       @client = Aws::DynamoDB::Client.new(client_options)
       @table = table
       @hash_key = hash_key
+      @expires_key = expires_key
       @ttl = ttl
     end
 
@@ -63,7 +64,7 @@ module Marloss
         table_name: table,
         time_to_live_specification: {
           enabled: true,
-          attribute_name: "Expires"
+          attribute_name: expires_key
         }
       )
 
@@ -89,10 +90,10 @@ module Marloss
         item: {
           hash_key => name,
           "ProcessID" => process_id,
-          "Expires" => (Time.now + ttl).to_i
+          expires_key => (Time.now + ttl).to_i
         },
         expression_attribute_names: {
-          "#E" => "Expires",
+          "#E" => expires_key,
           "#P" => "ProcessID"
         },
         expression_attribute_values: {
@@ -114,7 +115,7 @@ module Marloss
         table_name: table,
         key: { hash_key => name },
         expression_attribute_names: {
-          "#E" => "Expires",
+          "#E" => expires_key,
           "#P" => "ProcessID"
         },
         expression_attribute_values: {
