@@ -8,6 +8,11 @@ describe Marloss::Store do
   let(:ttl) { 10 }
   let(:client_options) { {} }
   let(:store) { described_class.new(table, hash_key, ttl: ttl, client_options: client_options) }
+  let(:unique_process_id) { "58a0b601" }
+  let(:unique_process_options) do
+    { ttl: ttl, client_options: client_options, unique_process_id: unique_process_id }
+  end
+  let(:unique_process_store) { described_class.new(table, hash_key, unique_process_options) }
 
   let(:name) { "my_resource" }
   let(:hostname) { "hostname.local" }
@@ -88,6 +93,28 @@ describe Marloss::Store do
       )
 
       store.create_lock(name)
+    end
+
+    it "should create the lock with a unique process id" do
+      expect(ddb_client).to receive(:put_item).with(
+        table_name: table,
+        item: {
+          hash_key => name,
+          "ProcessID" => unique_process_id,
+          "Expires" => expires
+        },
+        expression_attribute_names: {
+          "#E" => "Expires",
+          "#P" => "ProcessID"
+        },
+        expression_attribute_values: {
+          ":now" => Time.now.to_i,
+          ":process_id" => unique_process_id
+        },
+        condition_expression: "attribute_not_exists(#{hash_key}) OR #E < :now OR #P = :process_id"
+      )
+
+      unique_process_store.create_lock(name)
     end
 
     it "should fail creating the lock and raise error" do
