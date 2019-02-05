@@ -2,16 +2,16 @@
 
 module Marloss
   class Store # rubocop:disable Metrics/ClassLength
-    attr_reader :client, :table, :hash_key, :expires_key, :ttl, :unique_process_id
+    attr_reader :client, :table, :hash_key, :expires_key, :ttl, :custom_process_id
 
     def initialize(table, hash_key, **options)
-      client_options = options[:client_options] || {}
+      client_options = options.fetch(:client_options, {})
       @client = Aws::DynamoDB::Client.new(client_options)
       @table = table
       @hash_key = hash_key
-      @expires_key = options[:expires_key] || "Expires"
-      @ttl = options[:ttl] || 30
-      @unique_process_id = options[:unique_process_id] || nil
+      @expires_key = options.fetch(:expires_key, "Expires")
+      @ttl = options.fetch(:ttl, 30)
+      @custom_process_id = options.fetch(:custom_process_id, nil)
     end
 
     def create_table
@@ -143,7 +143,7 @@ module Marloss
     end
 
     private def process_id
-      return unique_process_id unless unique_process_id.nil?
+      return custom_process_id if custom_process_id
 
       hostname = `hostname`.chomp
       pid = Process.pid
