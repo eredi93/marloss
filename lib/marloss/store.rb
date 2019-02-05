@@ -2,14 +2,16 @@
 
 module Marloss
   class Store # rubocop:disable Metrics/ClassLength
-    attr_reader :client, :table, :hash_key, :expires_key, :ttl
+    attr_reader :client, :table, :hash_key, :expires_key, :ttl, :process_id
 
-    def initialize(table, hash_key, expires_key: "Expires", ttl: 30, client_options: {})
+    def initialize(table, hash_key, **options)
+      client_options = options.fetch(:client_options, {})
       @client = Aws::DynamoDB::Client.new(client_options)
       @table = table
       @hash_key = hash_key
-      @expires_key = expires_key
-      @ttl = ttl
+      @expires_key = options.fetch(:expires_key, "Expires")
+      @ttl = options.fetch(:ttl, 30)
+      @process_id = options[:custom_process_id] || host_process_id
     end
 
     def create_table
@@ -140,7 +142,7 @@ module Marloss
       Marloss.logger.info("Lock for #{name} deleted successfully")
     end
 
-    private def process_id
+    private def host_process_id
       hostname = `hostname`.chomp
       pid = Process.pid
 

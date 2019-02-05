@@ -7,8 +7,11 @@ describe Marloss::Store do
   let(:hash_key) { "LockID" }
   let(:ttl) { 10 }
   let(:client_options) { {} }
-  let(:store) { described_class.new(table, hash_key, ttl: ttl, client_options: client_options) }
-
+  let(:custom_process_id) { nil }
+  let(:options) do
+    { ttl: ttl, client_options: client_options, custom_process_id: custom_process_id }
+  end
+  let(:store) { described_class.new(table, hash_key, options) }
   let(:name) { "my_resource" }
   let(:hostname) { "hostname.local" }
   let(:pid) { 86_776 }
@@ -18,7 +21,7 @@ describe Marloss::Store do
   before do
     allow(Aws::DynamoDB::Client).to receive(:new).with(client_options)
       .and_return(ddb_client)
-    allow(store).to receive(:`).with("hostname").and_return(hostname)
+    allow_any_instance_of(described_class).to receive(:`).with("hostname").and_return(hostname)
     allow(Process).to receive(:pid).and_return(pid)
   end
 
@@ -110,6 +113,32 @@ describe Marloss::Store do
       ).and_raise(ddb_error)
 
       expect { store.create_lock(name) }.to raise_error(Marloss::LockNotObtainedError)
+    end
+  end
+
+  context "with custom process id" do
+    let(:custom_process_id) { "58a0b601" }
+
+    it "should create the lock" do
+      expect(ddb_client).to receive(:put_item).with(
+        table_name: table,
+        item: {
+          hash_key => name,
+          "ProcessID" => custom_process_id,
+          "Expires" => expires
+        },
+        expression_attribute_names: {
+          "#E" => "Expires",
+          "#P" => "ProcessID"
+        },
+        expression_attribute_values: {
+          ":now" => Time.now.to_i,
+          ":process_id" => custom_process_id
+        },
+        condition_expression: "attribute_not_exists(#{hash_key}) OR #E < :now OR #P = :process_id"
+      )
+
+      store.create_lock(name)
     end
   end
 
