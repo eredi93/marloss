@@ -2,7 +2,7 @@
 
 module Marloss
   class Store # rubocop:disable Metrics/ClassLength
-    attr_reader :client, :table, :hash_key, :expires_key, :ttl, :custom_process_id
+    attr_reader :client, :table, :hash_key, :expires_key, :ttl, :process_id
 
     def initialize(table, hash_key, **options)
       client_options = options.fetch(:client_options, {})
@@ -11,7 +11,7 @@ module Marloss
       @hash_key = hash_key
       @expires_key = options.fetch(:expires_key, "Expires")
       @ttl = options.fetch(:ttl, 30)
-      @custom_process_id = options.fetch(:custom_process_id, nil)
+      @process_id = options[:custom_process_id] || host_process_id
     end
 
     def create_table
@@ -142,9 +142,7 @@ module Marloss
       Marloss.logger.info("Lock for #{name} deleted successfully")
     end
 
-    private def process_id
-      return custom_process_id if custom_process_id
-
+    private def host_process_id
       hostname = `hostname`.chomp
       pid = Process.pid
 
