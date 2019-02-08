@@ -7,6 +7,8 @@ Marloss is a general DynamoDB-based lock implementation.
 
 ![rusty-lock](https://user-images.githubusercontent.com/10990391/33243215-aa602a6c-d2d9-11e7-8fc6-d4a0c2a5b30d.jpg)
 
+This Gem is tested using Ruby 2.6, 2.5, 2.4, 2.3
+
 ### Installation
 
 Add this line to your application's Gemfile:
