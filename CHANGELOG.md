@@ -1,3 +1,9 @@
+## 0.5.0 11/02/2019
+
+IMPROVEMENTS:
+
+* Add the option to specify a `custom_process_id` [#15](https://github.com/eredi93/marloss/pull/15)
+
 ## 0.4.0 01/09/2018
 
 IMPROVEMENTS:
