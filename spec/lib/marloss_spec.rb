@@ -93,6 +93,15 @@ describe Marloss do
             expect(locker).to eq(marloss_locker)
           end
         end
+
+        it "should not release lock if it was not obtained" do
+          expect(marloss_locker).to receive(:wait_until_lock_obtained).and_raise Marloss::LockNotObtainedError
+          expect(marloss_locker).not_to receive(:release_lock)
+
+          expect do
+            class_instance.with_marloss_locker(lock_name)
+          end.to raise_error(Marloss::LockNotObtainedError)
+        end
       end
     end
   end
