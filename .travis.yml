@@ -1,9 +1,11 @@
 language: ruby
 rvm:
-  - 2.6.1
-  - 2.5.3
-  - 2.4.5
-  - 2.3.8
+  - 2.7.1
+  - 2.6.6
+  - 2.5.8
+  - 2.4.10
 notifications:
   email: false
-before_script: bundle exec rubocop
+script:
+  - bundle exec rubocop
+  - bundle exec rspec

@@ -1,8 +1,15 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Marloss::Store do
   let(:ddb_client) { instance_double(Aws::DynamoDB::Client) }
-  let(:ddb_error) { Aws::DynamoDB::Errors::ConditionalCheckFailedException.new(nil, "An error message") }
+  let(:ddb_error) do
+    Aws::DynamoDB::Errors::ConditionalCheckFailedException.new(
+      nil,
+      "An error message"
+    )
+  end
   let(:table) { "my_table" }
   let(:hash_key) { "LockID" }
   let(:ttl) { 10 }

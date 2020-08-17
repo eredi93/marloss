@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Marloss do
@@ -7,15 +9,15 @@ describe Marloss do
 
   it "should return the logger" do
     Marloss.logger = nil # make sure it was not set before
-    logger = Logger.new(STDOUT)
+    logger = Logger.new($stdout)
 
-    allow(Logger).to receive(:new).with(STDOUT).and_return(logger)
+    allow(Logger).to receive(:new).with($stdout).and_return(logger)
 
     expect(Marloss.logger).to eq(logger)
   end
 
   it "should set the env and return the new env" do
-    logger = Logger.new(STDERR)
+    logger = Logger.new($stderr)
     Marloss.logger = logger
 
     expect(Marloss.logger).to eq(logger)
@@ -95,7 +97,8 @@ describe Marloss do
         end
 
         it "should not release lock if it was not obtained" do
-          expect(marloss_locker).to receive(:wait_until_lock_obtained).and_raise Marloss::LockNotObtainedError
+          expect(marloss_locker).to receive(:wait_until_lock_obtained)
+            .and_raise(Marloss::LockNotObtainedError)
           expect(marloss_locker).not_to receive(:release_lock)
 
           expect do

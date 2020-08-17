@@ -1,4 +1,6 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift(File.expand_path("../lib", __dir__))
 
 require "marloss"
 

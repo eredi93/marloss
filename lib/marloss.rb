@@ -9,7 +9,7 @@ require "marloss/locker"
 
 module Marloss
   def self.logger
-    @logger ||= ::Logger.new(STDOUT)
+    @logger ||= ::Logger.new($stdout)
   end
 
   def self.logger=(logger)
