@@ -10,4 +10,5 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-bundle exec gem bump --push --tag --release --version "${1}"
+bundle exec gem bump --push --tag --version "${1}"
+bundle exec gem release
