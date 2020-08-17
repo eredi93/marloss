@@ -50,13 +50,15 @@ module Marloss
     end
 
     def with_marloss_locker(name, opts = {})
+      have_lock = false
       locker = marloss_locker(name)
 
       locker.wait_until_lock_obtained(opts)
+      have_lock = true
 
       yield(locker)
     ensure
-      locker.release_lock
+      locker.release_lock if have_lock
     end
   end
 end
