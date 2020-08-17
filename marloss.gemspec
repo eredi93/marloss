@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "marloss/version"
 
 files = `git ls-files -z`.split("\x0")
-  .reject { |f| f.match(%r{^(test|spec|features)/}) }
+  .reject { |f| f.match(%r{^(script|spec)/}) }
 
 Gem::Specification.new do |spec|
   spec.name          = "marloss"

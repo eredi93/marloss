@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+usage () {
+  echo "Usage:"
+  echo "$0 VERSION_TARGET [major|minor|patch|pre|release]"
+}
+
+if [ $# -ne 1 ]; then
+  >&2 usage
+  exit 1
+fi
+
+bundle exec gem bump --push --tag --release --version "${1}"
